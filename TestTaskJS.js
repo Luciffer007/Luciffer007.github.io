@@ -1,6 +1,46 @@
 "use strict";
 
-/* Функции сравнения */
+class ModalWindow {
+
+    constructor() {
+        document.body.insertAdjacentHTML('afterBegin', '<!-- Модальное окно -->' +
+                                                       '<div id="modal-window">' +
+                                                           '<span id="headline"></span>' + 
+                                                           '<span id="close-button">X</span><br>' +
+                                                           '<div id="selection-window">' +
+                                                               '<table></table>' +
+                                                           '</div>' +
+                                                           '<div id="button-panel">' +
+                                                               '<div>Ок</div>' +
+                                                               '<div>Отмена</div>' +
+                                                           '</div>' +
+                                                       '</div>' + 
+                                                       '<!-- Модальное окно -->' +
+                                                       '<div id="overlay"></div>'); 
+    }
+  
+    open() {
+        $('#overlay').fadeIn(400, 
+            function(){ 
+                $('#modal-window') 
+                    .css('display', 'block') 
+                    .animate({opacity: 1, top: '50%'}, 200); 
+        });
+    }
+  
+    close() {
+        $('#modal-window')
+		.animate({opacity: 0, top: '45%'}, 200,  
+                    function(){ 
+			$(this).css('display', 'none'); 
+			$('#overlay').fadeOut(400); 
+                    }
+		);     
+    }
+
+}
+
+/* Функция сравнения для сотрудников */
 function compareEmployees(a,b) {  
     if (a.lastname < b.lastname)
         return -1;
@@ -17,6 +57,7 @@ function compareEmployees(a,b) {
     return 0;
 }
 
+/* Функция сравнения для должностей, организаций и подразделений */
 function comparePosOrgSub(a,b) {  
     if (a.name < b.name)
         return -1;
@@ -27,8 +68,10 @@ function comparePosOrgSub(a,b) {
 
 $(document).ready(function() { 
     var tableID;
+    var modalWindow = new ModalWindow();
     /* Открытие модального окна */
     $('.open-window').click( function(event){ 
+
 	tableID = event.target.parentNode.getAttribute('id'); 
                 
         /* Заволнение окна данными из JSON файлов */
@@ -116,13 +159,8 @@ $(document).ready(function() {
                 });                  
                 break;                       
         }
-                
-        $('#overlay').fadeIn(400, 
-            function(){ 
-                $('#modal-window') 
-                    .css('display', 'block') 
-                    .animate({opacity: 1, top: '50%'}, 200); 
-            });
+        
+        modalWindow.open();        
     });
     
     /* Работа с содержимым модального окна */
@@ -166,13 +204,7 @@ $(document).ready(function() {
     
     /* Зaкрытие мoдaльнoгo oкнa */
     $('#close-button,#button-panel div:first-child, #button-panel div:last-child').click( function(){ 
-            $('#modal-window')
-		.animate({opacity: 0, top: '45%'}, 200,  
-                    function(){ 
-			$(this).css('display', 'none'); 
-			$('#overlay').fadeOut(400); 
-                    }
-		);
+        modalWindow.close();        
     });
 });
 
