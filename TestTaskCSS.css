@@ -1,5 +1,4 @@
 #main-menu {
-    /*border: 2px black solid; /* Для разработки*/
     width: 350px;
     text-align: center;
     z-index: 1;
@@ -7,7 +6,8 @@
 
 .selection-field {
     text-align: left;
-    margin-bottom: 55px;
+    height: 50px;
+    margin-bottom: 50px;
 }
 
 .selection-field div {
@@ -15,15 +15,25 @@
     font: 14pt Arial;  
 }
 
-.selection-field div:first-child {
+.selection-field div:nth-child(1) {
     width: 230px;
 }
 
-.selection-field div:last-child {
+.selection-field div:nth-child(2) {
     border: 1px solid black;
     width: 80px;
     padding: 7px;
     cursor: pointer;
+}
+
+.selection-field div:nth-child(2):hover {
+    background-color: turquoise;
+}
+
+.selection-field div:nth-child(3) {
+    margin-top: 7px;
+    position: relative;
+    left: 233px;
 }
 
 #overlay {
@@ -76,10 +86,16 @@
 #selection-window {
     width: 545px; 
     height: 380px;
-    border: 1px black solid;
+    border: 1px solid black;
     margin-left: auto;
     margin-right: auto;
     margin-top: 10px;
+    overflow: auto;
+}
+
+#selection-window table {
+    width: 100%;
+    border-collapse: collapse; 
 }
 
 #button-panel {
@@ -100,3 +116,15 @@
     cursor: pointer;
 }
 
+#button-panel div:hover {
+    background-color: turquoise;
+}
+
+.accentuated:hover {
+    background-color: turquoise;
+    cursor: pointer;
+}
+
+#selected {
+    background-color: turquoise;
+}

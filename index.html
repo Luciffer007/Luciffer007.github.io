@@ -13,22 +13,26 @@
             
             <div id="employee" class="selection-field">
                 <div>Сотрудник</div>
-                <div class="open-window">Выбрать</div>                    
+                <div class="open-window">Выбрать</div>   
+                <div id="nameEmployee"></div>
             </div>
             
             <div id="position" class="selection-field">
                 <div>Должность</div>
-                <div class="open-window">Выбрать</div>                    
+                <div class="open-window">Выбрать</div> 
+                <div id="namePosition"></div>
             </div>
             
             <div id="organization" class="selection-field">
                 <div>Организация</div>
-                <div class="open-window">Выбрать</div>                   
+                <div class="open-window">Выбрать</div> 
+                <div id="nameOrganization"></div>
             </div>
             
             <div id="subdivision" class="selection-field">
                 <div>Подразделение</div>
-                <div class="open-window">Выбрать</div>                    
+                <div class="open-window">Выбрать</div> 
+                <div id="nameSubdivision"></div>
             </div>
             
         </div>
@@ -37,7 +41,11 @@
         <div id="modal-window">
             <span id="headline"></span>
             <span id="close-button">X</span><br>
-            <div id="selection-window"></div>
+            
+            <div id="selection-window">
+                <table></table>
+            </div>
+            
             <div id="button-panel">
                 <div>Ок</div>
                 <div>Отмена</div>
@@ -46,10 +54,15 @@
         <!-- Подложка -->
         <div id="overlay"></div>
         
-        <script src="orgs.json"></script>
-        <script src="persons.json"></script>
-        <script src="position.json"></script>
-        <script src="subs.json"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
         <script src="TestTaskJS.js"></script>
+        <script>
+            /* $.getJSON('orgs.json', function(data){
+                console.log(data);
+                alert(data[0].name);
+            });
+            /* var data1 = $.getJSON('orgs.json');
+            console.log(data1); --> */
+        </script>       
     </body>
 </html>
