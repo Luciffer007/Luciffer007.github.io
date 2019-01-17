@@ -1,34 +1,32 @@
 "use strict";
 
-class ModalWindow {
+function ModalWindow() {
 
-    constructor() {
-        document.body.insertAdjacentHTML('afterBegin', '<!-- Модальное окно -->' +
-                                                       '<div id="modal-window">' +
-                                                           '<span id="headline"></span>' + 
-                                                           '<span id="close-button">X</span><br>' +
-                                                           '<div id="selection-window">' +
-                                                               '<table></table>' +
-                                                           '</div>' +
-                                                           '<div id="button-panel">' +
-                                                               '<div>Ок</div>' +
-                                                               '<div>Отмена</div>' +
-                                                           '</div>' +
-                                                       '</div>' + 
-                                                       '<!-- Модальное окно -->' +
-                                                       '<div id="overlay"></div>'); 
-    }
+    document.body.insertAdjacentHTML('afterBegin', '<!-- Модальное окно -->' +
+                                                   '<div id="modal-window">' +
+                                                       '<span id="headline"></span>' + 
+                                                       '<span id="close-button">X</span><br>' +
+                                                       '<div id="selection-window">' +
+                                                           '<table></table>' +
+                                                       '</div>' +
+                                                       '<div id="button-panel">' +
+                                                           '<div>Ок</div>' +
+                                                           '<div>Отмена</div>' +
+                                                       '</div>' +
+                                                   '</div>' + 
+                                                   '<!-- Модальное окно -->' +
+                                                   '<div id="overlay"></div>'); 
   
-    open() {
+    this.open = function() {
         $('#overlay').fadeIn(400, 
             function(){ 
                 $('#modal-window') 
                     .css('display', 'block') 
                     .animate({opacity: 1, top: '50%'}, 200); 
         });
-    }
+    };
   
-    close() {
+    this.close = function() {
         $('#modal-window')
 		.animate({opacity: 0, top: '45%'}, 200,  
                     function(){ 
@@ -36,7 +34,7 @@ class ModalWindow {
 			$('#overlay').fadeOut(400); 
                     }
 		);     
-    }
+    };
 
 }
 
