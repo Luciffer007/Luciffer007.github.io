@@ -194,6 +194,9 @@ $(document).ready(function() {
     
     /* Работа с содержимым модального окна */
     $('#selection-window table').click( function(event){ 
+        if (document.getElementById('selected')) {
+            document.getElementById('selected').removeAttribute('id');
+        }   
         if (event.target.tagName === 'TD'){ 
             event.target.parentNode.id = 'selected'; 
             /*selectItemId = event.target.parentNode.getAttribute('itemId');*/ 
