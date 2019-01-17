@@ -24,7 +24,7 @@ function ModalWindow() {
                     .css('display', 'block') 
                     .animate({opacity: 1, top: '50%'}, 200); 
         });
-    };
+    }; 
   
     this.close = function() {
         $('#modal-window')
@@ -57,11 +57,22 @@ function compareEmployees(a,b) {
 
 /* Функция сравнения для должностей, организаций и подразделений */
 function comparePosOrgSub(a,b) {  
+    
+    /* return (a.name - b.name); */
+    
     if (a.name < b.name)
         return -1;
     if (a.name > b.name)
         return 1;
     return 0;
+}
+
+function findById(source, id) {
+  for (var i = 0; i < source.length; i++) {
+    if (source[i].id === id) {
+      return source[i];
+    }
+  }
 }
 
 $(document).ready(function() { 
@@ -72,7 +83,7 @@ $(document).ready(function() {
 
 	tableID = event.target.parentNode.getAttribute('id'); 
                 
-        /* Заволнение окна данными из JSON файлов */
+        /* Заполнение окна данными из JSON файлов */
         switch (tableID) {                   
             case 'employee':
                 $('#headline').text("Выбор сотрудника");
@@ -95,7 +106,7 @@ $(document).ready(function() {
                                                                 + data[i].birthday + 
                                                             '</td></tr>');           
                     }  
-                });                    
+                });                   
                 break;
                         
             case 'position':
@@ -150,16 +161,16 @@ $(document).ready(function() {
                             $('#selection-window table').append('<tr class="accentuated"><td>' 
                                                                     + dataSubs[i].name + 
                                                                     '</td><td>' 
-                                                                    + dataOrgs.find(x => x.id === dataSubs[i].org_id).name + 
+                                                                    + findById(dataOrgs, dataSubs[i].org_id).name + 
                                                                 '</td></tr>');
                         }
                     });
-                });                  
+                });  
                 break;                       
         }
-        
+
         modalWindow.open();        
-    });
+    }); 
     
     /* Работа с содержимым модального окна */
     $('#selection-window table').click( function(event){ 
