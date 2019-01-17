@@ -48,35 +48,35 @@ function getFullName(person) {
 
 /* Функция сравнения для сотрудников */
 function compareEmployees(a,b) { 
-    if (getFullName(a) < getFullName(b))
+    if ( getFullName(a) < getFullName(b) )
         return -1;
-    if (getFullName(a) > getFullName(b))
+    if ( getFullName(a) > getFullName(b) )
         return 1;
     return 0;
 }
 
 /* Функция сравнения для должностей, организаций и подразделений */
 function comparePosOrgSub(a,b) {     
-    if (a.name < b.name)
+    if ( a.name < b.name )
         return -1;
-    if (a.name > b.name)
+    if ( a.name > b.name )
         return 1;
     return 0;
 }
 
+function compareId(id1, id2) { 
+    if ( id1 == id2 ) {
+      return 'selected';
+    }
+}
+
 /* Пооиск в массиве объекта с нужным ID */
 function findById(source, id) {
-  for (var i = 0; i < source.length; i++) {
-    if (source[i].id === id) {
+  for ( var i = 0; i < source.length; i++ ) {
+    if ( source[i].id === id ) {
       return source[i];
     }
   }
-}
-
-function compareId(id1, id2) { 
-    if (id1 == id2) {
-      return 'selected';
-    }
 }
 
 /* Вычисление возраста работника */
@@ -84,6 +84,43 @@ function getAge(date) {
   var dateMas = date.split('.');
   var dateFormat = dateMas[2] + '-' + dateMas[1] + '-' + dateMas[0]; 
   return ((new Date().getTime() - new Date(dateFormat)) / (24 * 3600 * 365.25 * 1000)) | 0;
+}
+
+function checkCompliance(age, min, max, message) {
+                if ( min ) {
+                    if( age < +min  || age > +max ){
+                        var result = confirm(message);
+                        if( result )
+                            return 0;
+                        return 1;
+                    }
+                }
+}
+
+/* Запись данных в окна */
+function recordData(selector, data) {
+    $(selector).html(data + '<span class="delete">X</span>'); 
+    var iter = arguments.length;
+    while ( iter > 2 ) {
+        $(selector).attr(arguments[iter - 2], arguments[iter - 1]);
+        iter--;
+        iter--;
+    }
+}
+
+/* Удаление данных из окон */
+function deleteData(selector) {
+    var args = arguments;
+    $(selector).click( function(event){        
+        if ( event.target.tagName === 'SPAN' ){
+            $(selector).html('');
+            var iter = args.length;
+            while ( iter > 1 ) {
+                $(selector).removeAttr(args[iter - 1]);
+                iter--;
+            }
+        }       
+    });    
 }
 
 $(document).ready(function() { 
@@ -194,129 +231,96 @@ $(document).ready(function() {
     
     /* Работа с содержимым модального окна */
     $('#selection-window table').click( function(event){ 
-        if (document.getElementById('selected')) {
+        
+        if ( document.getElementById('selected') ){
             document.getElementById('selected').removeAttribute('id');
         }   
+        
         if (event.target.tagName === 'TD'){ 
-            event.target.parentNode.id = 'selected'; 
-            /*selectItemId = event.target.parentNode.getAttribute('itemId');*/ 
+            event.target.parentNode.id = 'selected';  
             return;
         }
+        
         if (event.target.tagName === 'TR'){
             event.target.id = 'selected';  
-            /* selectItemId = event.targe.getAttribute('itemId'); */
             return;
         }
+        
     });
     
     /* Нажатие клавиши Ок */
     $('#button-panel div:first-child').click( function(){        
-        switch (tableID) {                   
+        switch (tableID) {   
+            
             case 'employee':
+                
                 var selected = document.getElementById('selected');
                 var min = $('#namePosition').attr('minAge');
                 var max = $('#namePosition').attr('maxAge');
                 var age = getAge(selected.cells[3].innerText);
                 
                 /* Проверка на соответствие должности, если выбрана */
-                if (min) {
-                    if( age < +min  || age > +max){
-                        var result = confirm(message1);
-                        if(!result){
-                            return;
-                        } 
-                    }
-                }
+                if ( checkCompliance(age, min, max, message1) )
+                    return;
                 
                 /* Запись данных в окно сотрудника */
-                $('#nameEmployee').html(selected.cells[0].innerText + ' '
-                                        + selected.cells[1].innerText + ' '
-                                        + selected.cells[2].innerText +
-                                        '<span class="delete">X</span>'); 
-                $('#nameEmployee').attr('age', age);
-                $('#nameEmployee').attr('itemId', selected.getAttribute('itemId'));
+                recordData ('#nameEmployee', selected.cells[0].innerText + ' ' + selected.cells[1].innerText + ' ' + selected.cells[2].innerText,
+                            'age', age,
+                            'itemId', selected.getAttribute('itemId'));
                 break;
                         
             case 'position':
+                
                 var selected = document.getElementById('selected');
                 var min = selected.cells[1].innerText;
                 var max = selected.cells[2].innerText;
                 var age = $('#nameEmployee').attr('age');
                 
                 /* Проверка на соответствие сотруднику, если выбран */
-                if (min) {
-                    if( age < +min  || age > +max){
-                        var result = confirm(message2);
-                        if(!result){
-                            return;
-                        } 
-                    }
-                }
+                if ( checkCompliance(age, min, max, message2) )
+                    return;                
                 
                 /* Запись данных в окно должности */
-                $('#namePosition').html(selected.cells[0].innerText +
-                                        '<span class="delete">X</span>'); 
-                $('#namePosition').attr('minAge', min);
-                $('#namePosition').attr('maxAge', max);
-                $('#namePosition').attr('itemId', selected.getAttribute('itemId'));
+                recordData ('#namePosition', selected.cells[0].innerText,
+                            'minAge', min,
+                            'maxAge', max,
+                            'itemId', selected.getAttribute('itemId'));
                 break;
                         
             case 'organization':
+                
                 var selected = document.getElementById('selected');
                 
                 /* Запись данных в окно организации */
-                $('#nameOrganization').html(selected.cells[0].innerText +
-                                            '<span class="delete">X</span>');
-                $('#nameOrganization').attr('itemId', selected.getAttribute('itemId'));                    
+                recordData ('#nameOrganization', selected.cells[0].innerText,
+                            'itemId', selected.getAttribute('itemId'));                  
                 break;
                         
             case 'subdivision':
+                
                 var selected = document.getElementById('selected');
                 
                 /* Запись данных в окно подразделения */
-                $('#nameSubdivision').html(selected.cells[0].innerText + 
-                                           '<span class="delete">X</span>');
-                $('#nameSubdivision').attr('itemId', selected.getAttribute('itemId'));                   
+                recordData ('#nameSubdivision', selected.cells[0].innerText,
+                            'itemId', selected.getAttribute('itemId'));                 
                 break;                       
         }              
     });
     
     /* Зaкрытие мoдaльнoгo oкнa */
-    $('#close-button,#button-panel div:first-child, #button-panel div:last-child').click( function(){ 
+    $('#close-button, #button-panel div:first-child, #button-panel div:last-child').click( function(){ 
         modalWindow.close();        
     });
     
     /* Удаление данных из окна сотрудника */
-    $('#nameEmployee').click( function(event){
-        if (event.target.tagName === 'SPAN'){
-            $('#nameEmployee').html('');
-            $('#nameEmployee').removeAttr('age');
-            $('#nameEmployee').removeAttr('itemId');
-        }       
-    });
+    deleteData('#nameEmployee', 'age', 'itemId');
     
     /* Удаление данных из окна должности */
-    $('#namePosition').click( function(event){
-        if (event.target.tagName === 'SPAN'){
-            $('#namePosition').html('');
-            $('#namePosition').removeAttr('minAge');
-            $('#namePosition').removeAttr('maxAge');
-        }       
-    });
+    deleteData('#namePosition', 'minAge', 'maxAge', 'itemId');
     
     /* Удаление данных из окна организации */
-    $('#nameOrganization').click( function(event){
-        if (event.target.tagName === 'SPAN'){
-            $('#nameOrganization').html('');
-        }       
-    });
+    deleteData('#nameOrganization', 'itemId');
     
     /* Удаление данных из окна подразделения */
-    $('#nameSubdivision').click( function(event){
-        if (event.target.tagName === 'SPAN'){
-            $('#nameSubdivision').html('');
-        }       
-    });
+    deleteData('#nameSubdivision', 'itemId');
 });
-
-
