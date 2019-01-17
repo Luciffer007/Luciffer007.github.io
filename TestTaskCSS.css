@@ -31,9 +31,21 @@
 }
 
 .selection-field div:nth-child(3) {
-    margin-top: 7px;
+    width: 800px;
+    margin-top: 15px;
     position: relative;
     left: 233px;
+}
+
+.delete {
+    margin-left: 15px;
+    padding: 5px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.delete:hover {
+    background-color: turquoise;
 }
 
 #overlay {
