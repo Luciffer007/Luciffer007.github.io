@@ -108,6 +108,7 @@
 #selection-window table {
     width: 100%;
     border-collapse: collapse; 
+    text-align: left;
 }
 
 #button-panel {

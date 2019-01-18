@@ -33,34 +33,54 @@ function ModalWindow() {
         $('#modal-window')
 		.animate({opacity: 0, top: '45%'}, 200,  
                     function(){ 
+                        $('#selection-window').scrollTop(0);
 			$(this).css('display', 'none'); 
 			$('#overlay').fadeOut(400); 
                     }
-		);     
+		);    
     };
 
 }
 
+function setHeadline (selector, headline) {      
+    $('#headline').text(headline);
+       
+    var tableHeadline = "";
+    var iter = arguments.length;
+    
+    while ( iter > 2 ) {
+        tableHeadline = "<th>" + arguments[iter - 1]  + "</th>" + tableHeadline;
+        iter--;
+    }
+    $('#selection-window table').html("<tr>" + tableHeadline + "</tr>");
+    
+    return $(selector).attr('itemId');
+}
+
 /* Функция получения полного имени */
 function getFullName(person) {
-            return person.lastname + person.middlename + person.firstname;
+    return person.lastname + person.middlename + person.firstname;
 }
 
 /* Функция сравнения для сотрудников */
-function compareEmployees(a,b) { 
+function compareEmployees(a,b) {     
     if ( getFullName(a) < getFullName(b) )
         return -1;
+    
     if ( getFullName(a) > getFullName(b) )
         return 1;
-    return 0;
+    
+    return 0;    
 }
 
 /* Функция сравнения для должностей, организаций и подразделений */
 function comparePosOrgSub(a,b) {     
     if ( a.name < b.name )
         return -1;
+    
     if ( a.name > b.name )
         return 1;
+    
     return 0;
 }
 
@@ -87,14 +107,14 @@ function getAge(date) {
 }
 
 function checkCompliance(age, min, max, message) {
-                if ( min ) {
-                    if( age < +min  || age > +max ){
-                        var result = confirm(message);
-                        if( result )
-                            return 0;
-                        return 1;
-                    }
-                }
+    if ( min ) {
+        if( age < +min  || age > +max ){
+            var result = confirm(message);
+            if( result )
+                return 0;
+            return 1;
+        }
+    }
 }
 
 /* Запись данных в окна */
@@ -127,27 +147,30 @@ $(document).ready(function() {
     var tableID;
     var selectItemId;
     var modalWindow = new ModalWindow();
+    
     /* Открытие модального окна */
-    $('.open-window').click( function(event){ 
-
-	tableID = event.target.parentNode.getAttribute('id'); 
+    $('.open-window').click( function(event){           
+	tableID = event.target.parentNode.getAttribute('id');        
                 
         /* Заполнение окна данными из JSON файлов */
-        switch (tableID) {                   
-            case 'employee':
-                selectItemId = $('#nameEmployee').attr('itemId');
+        switch ( tableID ) {      
+            
+            case 'employee':                
+                selectItemId = setHeadline('#nameEmployee', 
+                                           'Выбор сотрудника', 
+                                           'Фамилия', 
+                                           'Имя', 
+                                           'Отчество', 
+                                           'Дата рождения');
                 
-                $('#headline').text("Выбор сотрудника");
-                $('#selection-window table').html("<tr>\n\
-                                                       <th>Фамилия</th>\n\
-                                                       <th>Имя</th>\n\
-                                                       <th>Отчество</th>\n\
-                                                       <th>Дата рождения</th>\n\
-                                                   </tr>");
                 $.getJSON('persons.json', function(data){
                     data.sort(compareEmployees);
                     for(var i = 0; i < data.length; i++){
-                        $('#selection-window table').append('<tr class="accentuated" id="' + compareId(selectItemId, data[i].id) + '" itemId="' + data[i].id + '"><td>' 
+                        $('#selection-window table').append('<tr class="accentuated" id="' 
+                                                                + compareId(selectItemId, data[i].id) + 
+                                                                '" itemId="' 
+                                                                + data[i].id + 
+                                                                '"><td>' 
                                                                 + data[i].lastname + 
                                                                 '</td><td>' 
                                                                 + data[i].middlename + 
@@ -157,22 +180,24 @@ $(document).ready(function() {
                                                                 + data[i].birthday + 
                                                             '</td></tr>');           
                     }  
-                });      
+                });
                 break;
                         
-            case 'position':
-                selectItemId = $('#namePosition').attr('itemId');
-                
-                $('#headline').text("Выбор должности");
-                $('#selection-window table').html("<tr>\n\
-                                                       <th>Название</th>\n\
-                                                       <th>Минимальный возраст</th>\n\
-                                                       <th>Максимальный возраст</th>\n\
-                                                   </tr>");
+            case 'position':               
+                selectItemId = setHeadline('#namePosition', 
+                                           'Выбор должности', 
+                                           'Название', 
+                                           'Минимальный возраст', 
+                                           'Максимальный возраст');
+                    
                 $.getJSON('positions.json', function(data){
                     data.sort(comparePosOrgSub);
                     for(var i = 0; i < data.length; i++){
-                        $('#selection-window table').append('<tr class="accentuated" id="' + compareId(selectItemId, data[i].id) + '" itemId="' + data[i].id + '"><td>' 
+                        $('#selection-window table').append('<tr class="accentuated" id="' 
+                                                                + compareId(selectItemId, data[i].id) + 
+                                                                '" itemId="' 
+                                                                + data[i].id + 
+                                                                '"><td>' 
                                                                 + data[i].name + 
                                                                 '</td><td>' 
                                                                 + data[i].min_age + 
@@ -183,18 +208,20 @@ $(document).ready(function() {
                 });  
                 break;
                         
-            case 'organization':
-                selectItemId = $('#nameOrganization').attr('itemId');
-                
-                $('#headline').text("Выбор организации");  
-                $('#selection-window table').html("<tr>\n\
-                                                       <th>Название</th>\n\
-                                                       <th>Страна</th>\n\
-                                                   </tr>");
+            case 'organization':                
+                selectItemId = setHeadline('#nameOrganization', 
+                                           'Выбор организации', 
+                                           'Название', 
+                                           'Страна');
+                        
                 $.getJSON('orgs.json', function(data){
                     data.sort(comparePosOrgSub);
                     for(var i = 0; i < data.length; i++){
-                        $('#selection-window table').append('<tr class="accentuated" id="' + compareId(selectItemId, data[i].id) + '" itemId="' + data[i].id + '"><td>' 
+                        $('#selection-window table').append('<tr class="accentuated" id="' 
+                                                                + compareId(selectItemId, data[i].id) + 
+                                                                '" itemId="' 
+                                                                + data[i].id + 
+                                                                '"><td>' 
                                                                 + data[i].name + 
                                                                 '</td><td>' 
                                                                 + data[i].country + 
@@ -203,19 +230,21 @@ $(document).ready(function() {
                 });  
                 break;
                         
-            case 'subdivision':
-                selectItemId = $('#nameSubdivision').attr('itemId');
-                
-                $('#headline').text("Выбор подразделения");
-                $('#selection-window table').html("<tr>\n\
-                                                       <th>Название</th>\n\
-                                                       <th>Организация</th>\n\
-                                                   </tr>");
+            case 'subdivision':               
+                selectItemId = setHeadline('#nameSubdivision', 
+                                           'Выбор подразделения', 
+                                           'Название', 
+                                           'Организация');                
+                            
                 $.getJSON('subs.json', function(dataSubs){
                     $.getJSON('orgs.json', function(dataOrgs){
                         dataSubs.sort(comparePosOrgSub);
                         for(var i = 0; i < dataSubs.length; i++){
-                            $('#selection-window table').append('<tr class="accentuated" id="' + compareId(selectItemId, dataSubs[i].id) + '" itemId="' + dataSubs[i].id + '"><td>' 
+                            $('#selection-window table').append('<tr class="accentuated" id="' 
+                                                                    + compareId(selectItemId, dataSubs[i].id) + 
+                                                                    '" itemId="' 
+                                                                    + dataSubs[i].id +
+                                                                    '"><td>' 
                                                                     + dataSubs[i].name + 
                                                                     '</td><td>' 
                                                                     + findById(dataOrgs, dataSubs[i].org_id).name + 
@@ -236,12 +265,12 @@ $(document).ready(function() {
             document.getElementById('selected').removeAttribute('id');
         }   
         
-        if (event.target.tagName === 'TD'){ 
+        if ( event.target.tagName === 'TD' ){ 
             event.target.parentNode.id = 'selected';  
             return;
         }
         
-        if (event.target.tagName === 'TR'){
+        if ( event.target.tagName === 'TR' ){
             event.target.id = 'selected';  
             return;
         }
@@ -249,12 +278,12 @@ $(document).ready(function() {
     });
     
     /* Нажатие клавиши Ок */
-    $('#button-panel div:first-child').click( function(){        
-        switch (tableID) {   
+    $('#button-panel div:first-child').click( function(){ 
+        
+        var selected = document.getElementById('selected');
+        switch ( tableID ) {   
             
-            case 'employee':
-                
-                var selected = document.getElementById('selected');
+            case 'employee':               
                 var min = $('#namePosition').attr('minAge');
                 var max = $('#namePosition').attr('maxAge');
                 var age = getAge(selected.cells[3].innerText);
@@ -269,9 +298,7 @@ $(document).ready(function() {
                             'itemId', selected.getAttribute('itemId'));
                 break;
                         
-            case 'position':
-                
-                var selected = document.getElementById('selected');
+            case 'position':                
                 var min = selected.cells[1].innerText;
                 var max = selected.cells[2].innerText;
                 var age = $('#nameEmployee').attr('age');
@@ -287,19 +314,13 @@ $(document).ready(function() {
                             'itemId', selected.getAttribute('itemId'));
                 break;
                         
-            case 'organization':
-                
-                var selected = document.getElementById('selected');
-                
+            case 'organization':                
                 /* Запись данных в окно организации */
                 recordData ('#nameOrganization', selected.cells[0].innerText,
                             'itemId', selected.getAttribute('itemId'));                  
                 break;
                         
-            case 'subdivision':
-                
-                var selected = document.getElementById('selected');
-                
+            case 'subdivision':                
                 /* Запись данных в окно подразделения */
                 recordData ('#nameSubdivision', selected.cells[0].innerText,
                             'itemId', selected.getAttribute('itemId'));                 
@@ -309,7 +330,7 @@ $(document).ready(function() {
     
     /* Зaкрытие мoдaльнoгo oкнa */
     $('#close-button, #button-panel div:first-child, #button-panel div:last-child').click( function(){ 
-        modalWindow.close();        
+        modalWindow.close();          
     });
     
     /* Удаление данных из окна сотрудника */
