@@ -49,7 +49,7 @@ function setHeadline (selector, headline) {
     var iter = arguments.length;
     
     while ( iter > 2 ) {
-        tableHeadline = "<th>" + arguments[iter - 1]  + "</th>" + tableHeadline;
+        tableHeadline = "<th style='text-align: left;'>" + arguments[iter - 1]  + "</th>" + tableHeadline;
         iter--;
     }
     $('#selection-window table').html("<tr>" + tableHeadline + "</tr>");
